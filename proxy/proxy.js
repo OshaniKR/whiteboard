@@ -3,7 +3,7 @@ const WebSocket = require("ws");
 const net = require("net");
 
 // Create a WebSocket server for the frontend
-const frontendServer = new WebSocket.Server({ port: 8080 });
+const frontendServer = new WebSocket.Server({ port: 3000 });
 
 // Create a TCP client to connect to the Java backend
 const backendSocket = new net.Socket();
@@ -61,5 +61,5 @@ backendSocket.on("close", () => {
   console.log("Disconnected from Java backend");
 });
 
-console.log("WebSocket proxy running on ws://192.168.47.1:8080");
+console.log("WebSocket proxy running on ws://localhost:3000");
 

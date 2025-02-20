@@ -242,7 +242,7 @@ const Whiteboard = () => {
     context.lineCap = "round";
     context.lineJoin = "round";
 
-    socket.current = new WebSocket("ws://192.168.47.1:8080");
+    socket.current = new WebSocket("ws://localhost:3000");
 
     socket.current.onopen = () => {
       console.log("Connected to WebSocket server");
