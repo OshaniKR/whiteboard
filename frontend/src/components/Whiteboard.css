@@ -1,4 +1,4 @@
-.whiteboard-wrapper {
+/*.whiteboard-wrapper {
   background-color: black;
   width: 100vw;
   height: 100vh;
@@ -20,7 +20,7 @@
   border-radius: 5px;
   display: flex;
   gap: 10px;
-  margin-bottom: 20px; /* Increased gap between toolbar and whiteboard */
+  margin-bottom: 20px;
 }
 
 .color-picker {
@@ -58,14 +58,320 @@
 }
 
 .canvas-wrapper {
-  border: 5px solid #333; /* Dark border for the frame */
-  padding: 10px; /* Padding around the canvas for a framed look */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional shadow for a 3D effect */
-  border-radius: 10px; /* Rounded corners for the frame */
+  border: 5px solid #333;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }
 
 .canvas {
   background-color: white;
   border: none;
   display: block;
+}
+*/
+/*
+.whiteboard-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.whiteboard-container {
+  display: flex;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-right: 1px solid #ddd;
+}
+
+.color-picker,
+.brush-size,
+.tool-btn,
+.clear-btn {
+  margin: 5px 0;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tool-btn.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.clear-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.canvas-wrapper {
+  position: relative;
+}
+
+.canvas {
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+.chat-section {
+  width: 300px;
+  background-color: #f8f8f8;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.chat-input button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+}
+
+*/
+/* Wrapper for centering the entire whiteboard */
+.whiteboard-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black; /* Keeps the background black */
+}
+
+/* Whiteboard container with a stylish frame */
+.whiteboard-container {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3); /* Glowing effect */
+  overflow: hidden;
+  border: 6px solid #ffffff; /* Outer frame */
+}
+
+/* 🌟 New Matching Toolbar */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background: linear-gradient(135deg, #4c669f, #3b5998); /* Matching gradient */
+  border-right: 3px solid #ddd;
+  border-radius: 12px 0 0 12px; /* Rounded left edges */
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 🖌 Increased Gap & Matching Buttons */
+.tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease-in-out;
+  margin: 10px 0; /* Increased gap between buttons */
+}
+
+.tool-btn:nth-child(1) { background-color: #5a8dee; } /* Soft Blue */
+.tool-btn:nth-child(2) { background-color: #42b883; } /* Teal Green */
+.tool-btn:nth-child(3) { background-color: #ff9f43; } /* Orange */
+.tool-btn:nth-child(4) { background-color: #d81b60; } /* Deep Pink */
+.tool-btn:nth-child(5) { background-color: #9c27b0; } /* Purple */
+.tool-btn:nth-child(6) { background-color: #f48c06; } /* Warm Yellow */
+
+.tool-btn:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+/* Active Tool */
+.tool-btn.active {
+  border: 3px solid white;
+  transform: scale(1.1);
+}
+
+/* 🎨 Color Picker */
+.color-picker {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 15px 0; /* Increased spacing */
+  transition: transform 0.3s ease;
+}
+
+.color-picker:hover {
+  transform: scale(1.1);
+}
+
+/* Brush Size */
+.brush-size {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: white;
+  color: #333;
+  margin: 10px 0; /* Added spacing */
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.brush-size:hover {
+  background-color: #ddd;
+  transform: scale(1.05);
+}
+
+/* Clear Button */
+.clear-btn {
+  width: 130px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #d63031;
+  color: white;
+  margin: 15px 0;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+/* 🖌️ Whiteboard Styling with Frame */
+.canvas-wrapper {
+  position: relative;
+  background-color: white;
+  border-radius: 12px;
+  border: 6px solid #e0e0e0; /* Elegant border */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 3D effect */
+  padding: 5px;
+}
+
+.canvas {
+  border-radius: 12px;
+  background-color: white;
+}
+
+/* 💬 Chat Section with Frame */
+.chat-section {
+  width: 300px;
+  background-color: #f8f8f8;
+  border-left: 3px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 12px 12px 0;
+  border: 6px solid #e0e0e0; /* Matching frame with whiteboard */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+}
+
+/* Chat Box */
+.chat-box {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  border-bottom: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* Chat Messages */
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Chat Input Box */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+}
+
+/* Input Field */
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+/* Send Button */
+.chat-input button {
+  padding: 12px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
