@@ -233,7 +233,7 @@ const Whiteboard = () => {
 
   const [messages, setMessages] = useState([]); // Chat messages
   const [message, setMessage] = useState(""); // Current message input
-  const prevMessagesRef = useRef(new Set()); // Store message history to avoid duplicates
+  const [username, setUsername] = useState("User1"); // Sender's username (you can make this dynamic)
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -262,14 +262,10 @@ const Whiteboard = () => {
         } else if (data.type === "clear") {
           context.clearRect(0, 0, canvas.width, canvas.height);
         } else if (data.type === "chat") {
-          // Prevent duplicate messages using a Set
-          if (!prevMessagesRef.current.has(data.message)) {
-            setMessages((prev) => [
-              ...prev,
-              { text: data.message, isSent: data.sender === "me" },
-            ]);
-            prevMessagesRef.current.add(data.message); // Store message to avoid re-adding
-          }
+          setMessages((prev) => [
+            ...prev,
+            { text: data.message, sender: data.sender, isSent: data.sender === username },
+          ]);
         }
       } catch (error) {
         console.error("Failed to process WebSocket message:", error);
@@ -289,7 +285,7 @@ const Whiteboard = () => {
         socket.current.close();
       }
     };
-  }, []);
+  }, [username]);
 
   const startDrawing = (e) => {
     setIsDrawing(true);
@@ -353,8 +349,8 @@ const Whiteboard = () => {
 
     const chatMessage = {
       type: "chat",
-      message,
-      sender: "me", // Add sender information
+      message: `${username}: ${message}`,
+      sender: username, // Include sender information
     };
 
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
@@ -365,13 +361,12 @@ const Whiteboard = () => {
     setMessage("");
   };
 
-  // Function to save the canvas as an image
   const saveCanvasAsImage = () => {
     const canvas = canvasRef.current;
-    const dataURL = canvas.toDataURL("image/png"); // You can also use "image/jpeg" for JPEG format
+    const dataURL = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = dataURL;
-    link.download = "whiteboard-drawing.png"; // Default file name
+    link.download = "whiteboard-drawing.png";
     link.click();
   };
 
