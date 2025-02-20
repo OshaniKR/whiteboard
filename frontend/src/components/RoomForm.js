@@ -38,7 +38,7 @@ const RoomForm = () => {
       <Card className="room-form-card">
         <CardContent className="room-form-content">
           <Typography variant="h5" align="center" className="room-form-title">
-            Join or Create a Room
+            Join a Room
           </Typography>
 
           <TextField
@@ -68,14 +68,7 @@ const RoomForm = () => {
             Join Room
           </Button>
 
-          <Button
-            onClick={handleCreateRoom}
-            variant="outlined"
-            fullWidth
-            className="room-form-button"
-          >
-            Create Room
-          </Button>
+
         </CardContent>
       </Card>
     </div>
@@ -83,3 +76,13 @@ const RoomForm = () => {
 };
 
 export default RoomForm;
+
+
+/*          <Button
+              onClick={handleCreateRoom}
+              variant="outlined"
+              fullWidth
+              className="room-form-button"
+            >
+              Create Room
+            </Button>*/
