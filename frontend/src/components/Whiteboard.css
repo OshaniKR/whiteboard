@@ -1,53 +1,71 @@
-/* Whiteboard.css */
+.whiteboard-wrapper {
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-/* Container holding the canvas and toolbar */
 .whiteboard-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background-color: #f5f5f5;
-  height: 100vh;
-  box-sizing: border-box;
 }
 
-/* Toolbar styling */
 .toolbar {
-  margin-bottom: 10px;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
   display: flex;
   gap: 10px;
+  margin-bottom: 20px; /* Increased gap between toolbar and whiteboard */
 }
 
-/* Color picker, select, and button base styling */
-.toolbar input[type="color"],
-.toolbar select,
-.toolbar button {
+.color-picker {
+  width: 40px;
+  height: 40px;
+  border: none;
   cursor: pointer;
-  padding: 5px 10px;
-  border: 1px solid #000;
-  background-color: #fff;
+}
+
+.brush-size {
+  padding: 5px;
   font-size: 14px;
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
 }
 
-/* Active tool button styling */
-.toolbar button.active,
-.toolbar button:hover {
+.tool-btn {
+  padding: 10px;
+  cursor: pointer;
   background-color: #ddd;
+  border: none;
+  border-radius: 5px;
 }
 
-/* Canvas styling */
-.whiteboard-canvas {
-  border: 1px solid #000;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: #fff;
+.tool-btn.active {
+  background-color: #4caf50;
+  color: white;
 }
 
-/* Responsive adjustments */
-@media (max-width: 800px) {
-  .whiteboard-canvas {
-    width: 100%;
-    height: auto;
-  }
+.clear-btn {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #f44336;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+.canvas-wrapper {
+  border: 5px solid #333; /* Dark border for the frame */
+  padding: 10px; /* Padding around the canvas for a framed look */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional shadow for a 3D effect */
+  border-radius: 10px; /* Rounded corners for the frame */
+}
+
+.canvas {
+  background-color: white;
+  border: none;
+  display: block;
 }
