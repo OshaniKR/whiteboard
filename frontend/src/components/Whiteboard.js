@@ -231,11 +231,14 @@ const Whiteboard = () => {
   const contextRef = useRef(null);
   const lastPosRef = useRef({ x: 0, y: 0 });
 
-  const [messages, setMessages] = useState([]); // Chat messages
-  const [message, setMessage] = useState(""); // Current message input
-  const [username, setUsername] = useState("User1"); // Sender's username (you can make this dynamic)
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [isJoined, setIsJoined] = useState(false);
 
   useEffect(() => {
+    if (!isJoined) return;
+
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current = context;
@@ -246,6 +249,7 @@ const Whiteboard = () => {
 
     socket.current.onopen = () => {
       console.log("Connected to WebSocket server");
+      socket.current.send(JSON.stringify({ type: "join", username }));
     };
 
     socket.current.onmessage = (event) => {
@@ -285,12 +289,11 @@ const Whiteboard = () => {
         socket.current.close();
       }
     };
-  }, [username]);
+  }, [isJoined, username]);
 
   const startDrawing = (e) => {
     setIsDrawing(true);
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
+    const rect = canvasRef.current.getBoundingClientRect();
     lastPosRef.current = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
@@ -317,27 +320,26 @@ const Whiteboard = () => {
     context.lineWidth = brushSize;
     context.stroke();
 
-    const jsonData = {
-      type: "draw",
-      x1: lastPosRef.current.x,
-      y1: lastPosRef.current.y,
-      x2: x,
-      y2: y,
-      color: tool === "eraser" ? "#FFFFFF" : color,
-      brushSize: brushSize,
-    };
-
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-      socket.current.send(JSON.stringify(jsonData));
+      socket.current.send(
+        JSON.stringify({
+          type: "draw",
+          x1: lastPosRef.current.x,
+          y1: lastPosRef.current.y,
+          x2: x,
+          y2: y,
+          color: tool === "eraser" ? "#FFFFFF" : color,
+          brushSize: brushSize,
+        })
+      );
     }
 
     lastPosRef.current = { x, y };
   };
 
   const clearCanvas = () => {
-    const canvas = canvasRef.current;
     const context = contextRef.current;
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
       socket.current.send(JSON.stringify({ type: "clear" }));
@@ -347,17 +349,17 @@ const Whiteboard = () => {
   const sendMessage = () => {
     if (message.trim() === "") return;
 
+    // Send only the message text without appending username
     const chatMessage = {
       type: "chat",
-      message: `${username}: ${message}`,
-      sender: username, // Include sender information
+      message: message,
+      sender: username,
     };
 
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
       socket.current.send(JSON.stringify(chatMessage));
     }
 
-    // Clear the input field
     setMessage("");
   };
 
@@ -370,78 +372,101 @@ const Whiteboard = () => {
     link.click();
   };
 
+  const joinChat = () => {
+    if (username.trim() === "") return;
+    setIsJoined(true);
+  };
+
   return (
     <div className="whiteboard-wrapper">
-      <div className="whiteboard-container">
-        <div className="toolbar">
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="color-picker"
-          />
-          <select
-            value={brushSize}
-            onChange={(e) => setBrushSize(Number(e.target.value))}
-            className="brush-size"
-          >
-            <option value={2}>2px</option>
-            <option value={5}>5px</option>
-            <option value={10}>10px</option>
-            <option value={20}>20px</option>
-          </select>
-          <button
-            onClick={() => setTool("pen")}
-            className={`tool-btn ${tool === "pen" ? "active" : ""}`}
-          >
-            ✏️ Pen
-          </button>
-          <button
-            onClick={() => setTool("eraser")}
-            className={`tool-btn ${tool === "eraser" ? "active" : ""}`}
-          >
-            🧽 Eraser
-          </button>
-          <button onClick={clearCanvas} className="clear-btn">
-            🗑️ Clear
-          </button>
-          <button onClick={saveCanvasAsImage} className="save-btn">
-            💾 Save
-          </button>
-        </div>
-        <div className="canvas-wrapper">
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={500}
-            className="canvas"
-            onMouseDown={startDrawing}
-            onMouseUp={stopDrawing}
-            onMouseMove={draw}
-          />
-        </div>
-        <div className="chat-section">
-          <div className="chat-box">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`chat-message ${msg.isSent ? "sent" : "received"}`}
-              >
-                {msg.text}
-              </div>
-            ))}
-          </div>
-          <div className="chat-input">
+      {!isJoined ? (
+        <div className="join-chat-container">
+          <div className="join-chat-card">
+            <h2>Join the Whiteboard Chat</h2>
             <input
               type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type a message..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              className="join-chat-input"
             />
-            <button onClick={sendMessage}>Send</button>
+            <button onClick={joinChat} className="join-chat-btn">
+              Join Chat
+            </button>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="whiteboard-container">
+          <div className="toolbar">
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              className="color-picker"
+            />
+            <select
+              value={brushSize}
+              onChange={(e) => setBrushSize(Number(e.target.value))}
+              className="brush-size"
+            >
+              <option value={2}>2px</option>
+              <option value={5}>5px</option>
+              <option value={10}>10px</option>
+              <option value={20}>20px</option>
+            </select>
+            <button
+              onClick={() => setTool("pen")}
+              className={`tool-btn ${tool === "pen" ? "active" : ""}`}
+            >
+              ✏️ Pen
+            </button>
+            <button
+              onClick={() => setTool("eraser")}
+              className={`tool-btn ${tool === "eraser" ? "active" : ""}`}
+            >
+              🧽 Eraser
+            </button>
+            <button onClick={clearCanvas} className="clear-btn">
+              🗑️ Clear
+            </button>
+            <button onClick={saveCanvasAsImage} className="save-btn">
+              💾 Save
+            </button>
+          </div>
+          <div className="canvas-wrapper">
+            <canvas
+              ref={canvasRef}
+              width={800}
+              height={500}
+              className="canvas"
+              onMouseDown={startDrawing}
+              onMouseUp={stopDrawing}
+              onMouseMove={draw}
+            />
+          </div>
+          <div className="chat-section">
+            <div className="chat-box">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`chat-message ${msg.isSent ? "sent" : "received"}`}
+                >
+                  <strong>{msg.sender}:</strong> {msg.text}
+                </div>
+              ))}
+            </div>
+            <div className="chat-input">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type a message..."
+              />
+              <button onClick={sendMessage}>Send</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
